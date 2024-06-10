@@ -12,4 +12,9 @@ app.use(ElementPlus, {
   locale: zhCn,
 })
 import 'virtual:svg-icons-register'
+//引入自动逸插件对象：注册整个项目全局组件
+import globalComponent from '@/components';
+app.use(globalComponent)
+//引入模板的全局样式
+import '@/styles/index.scss'
 app.mount('#app')
