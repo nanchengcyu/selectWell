@@ -7,6 +7,8 @@ import type {loginForm} from "@/api/user/type.ts";
 import {UserState} from "@/store/modules/types/type.ts";
 //引入本地仓库存储的token方法
 import {GET_TOKEN, SET_TOKEN} from '@/utils/token.ts';
+//引入常量路由
+import {constantRoute} from "@/router/routes.ts";
 
 let useUserStore = defineStore(
     'user', {
@@ -14,6 +16,7 @@ let useUserStore = defineStore(
         state: (): UserState => {
             return {
                 token: GET_TOKEN(),
+                menuRoutes:constantRoute
             }
         },
         //异步

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import Logo from './logo/index.vue'
+import Logo from './logo/index.vue';
+import useUserStore from "@/store/modules/user.ts";
+import Menu from './menu/index.vue';
+// 使用 useUserStore 钩子，并确保返回需要的状态
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -9,7 +13,10 @@ import Logo from './logo/index.vue'
       <Logo></Logo>
       <!-- 展示菜单栏-->
       <el-scrollbar class="scrollbar">
-        <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+        <el-menu background-color="#001529" text-color="white">
+          <!-- 根据路由生产菜单 -->
+          <Menu :menuList="userStore.menuRoutes"></Menu>
+        </el-menu>
       </el-scrollbar>
     </div>
     <!--顶部导航-->
@@ -38,6 +45,10 @@ import Logo from './logo/index.vue'
     .scrollbar {
       width: 100%;
       height: calc(100vh - $base-menu-logo-height);
+
+      .el-menu {
+        border-right: none;
+      }
     }
   }
 
