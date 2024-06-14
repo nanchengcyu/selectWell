@@ -4,6 +4,8 @@ import useUserStore from "@/store/modules/user.ts";
 import Menu from './menu/index.vue';
 // 使用 useUserStore 钩子，并确保返回需要的状态
 const userStore = useUserStore();
+import Main from './main/index.vue'
+import Tabbar from './tabbar/index.vue'
 </script>
 
 <template>
@@ -21,12 +23,14 @@ const userStore = useUserStore();
     </div>
     <!--顶部导航-->
     <div class="layout_tabular">
+      <Tabbar>
 
+      </Tabbar>
     </div>
 
-    <!--顶部导航-->
+    <!--内容展示区-->
     <div class="layout_main">
-
+      <Main></Main>
     </div>
   </div>
 </template>
@@ -35,9 +39,9 @@ const userStore = useUserStore();
 .layout_container {
   width: 100%;
   height: 100vh;
-  background: black;
 
   .layout_slider {
+    color: white;
     width: $base-menu-width;
     height: 100vh;
     background: $base-menu-background;
@@ -56,7 +60,6 @@ const userStore = useUserStore();
     position: fixed;
     width: calc(100% - $base-menu-width);
     height: $base-tabbar-height;
-    background: cyan;
     top: 0px;
     left: $base-menu-width;
   }
