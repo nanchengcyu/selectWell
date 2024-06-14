@@ -6,14 +6,21 @@
   </el-icon>
   <!-- 左侧面包屑 -->
   <el-breadcrumb separator-icon="ArrowRight">
-    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+    <el-breadcrumb-item v-for="(item,index) in $route.matched" :key="index">
+      <el-icon>
+        <component :is="item.meta.icon"></component>
+      </el-icon>
+      <span>{{ item.meta.title }}</span>
+    </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
 
 <script setup lang='ts'>
-import  useLayoutSettingStore  from "@/store/modules/ setting.ts"
+import useLayoutSettingStore from "@/store/modules/setting.ts";
+import {useRouter} from "vue-router";
+
+let $route = useRouter();
 
 // 获取layout配置相关的仓库
 let LayoutSettingStore = useLayoutSettingStore();

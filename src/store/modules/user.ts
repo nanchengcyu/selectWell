@@ -1,7 +1,7 @@
 //创建用户相关的小仓库
 import {defineStore} from 'pinia';
 //引入接口
-import {reqLogin} from "@/api/user";
+import {reqLogin,reqUserInfo} from "@/api/user";
 //引入数据类型
 import type {loginForm} from "@/api/user/type.ts";
 import {UserState} from "@/store/modules/types/type.ts";
@@ -16,7 +16,9 @@ let useUserStore = defineStore(
         state: (): UserState => {
             return {
                 token: GET_TOKEN(),
-                menuRoutes:constantRoute
+                menuRoutes:constantRoute,
+                username:'',
+                avatar:''
             }
         },
         //异步
@@ -30,11 +32,22 @@ let useUserStore = defineStore(
                     //本地持久化存储
                     SET_TOKEN((result.data.token as string))
                     //保证当前async函数返回一个成功的promise
+
                     return "ok";
                 } else {
                     return Promise.reject(new Error(result.data.message))
                 }
+            },
+            //获取用户信息
+            async userInfo(){
+                let result = await reqUserInfo();
+                console.log(result)
+                if (result.code == 200) {
+                this.username= result.data.checkUser.username
+                this.avatar= result.data.checkUser.avatar
+                }
             }
+
         },
         getters: {}
     }

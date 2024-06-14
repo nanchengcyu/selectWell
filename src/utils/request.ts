@@ -1,6 +1,8 @@
 //对axios进行二次封装，在其基础上添加请求拦截器和响应拦截器，并添加错误统一处理和loading效果。
 import axios from 'axios';
 import {ElMessage} from "element-plus";
+//引入用户相关仓库 =》 token
+import useUserStore from "@/store/modules/user.ts";
 
 let request = axios.create({
     //基础路径
@@ -9,6 +11,10 @@ let request = axios.create({
 });
 //请求拦截器
 request.interceptors.request.use((config) => {
+    let userStore = useUserStore();
+    if (userStore.token){
+        config.headers.token = userStore.token;
+    }
     return config;
 });
 //响应拦截器
@@ -37,7 +43,7 @@ request.interceptors.response.use((response) => {
     }
     //提示错误信息
     ElMessage({
-        type:'error',
+        type: 'error',
         message
     });
     return Promise.reject(error);
