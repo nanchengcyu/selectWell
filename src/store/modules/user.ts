@@ -58,10 +58,10 @@ const useUserStore = defineStore('User', {
             const result: any = await reqLogout()
             if (result.code == 200) {
                 //本地数据清空
-                this.token = ''
-                this.username = ''
-                this.avatar = ''
-                REMOVE_TOKEN()
+                this.token = '';
+                this.username = '';
+                this.avatar = '';
+                REMOVE_TOKEN();
                 return 'ok'
             } else {
                 return Promise.reject(new Error(result.message))
