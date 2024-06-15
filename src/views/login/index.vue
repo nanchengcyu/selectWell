@@ -3,7 +3,7 @@
 import {Lock, User} from "@element-plus/icons-vue";
 import {reactive, ref} from "vue";
 import useUserStore from '@/store/modules/user.ts'
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {ElNotification} from "element-plus";
 import {getTime} from "@/utils/time.ts";
 
@@ -15,6 +15,7 @@ let $router = useRouter();
 let loading = ref(false);
 //获取el-form组件
 let loginForms = ref();
+let $route = useRoute();
 //登录回调
 const login = async () => {
   await loginForms.value.validate();
@@ -24,7 +25,8 @@ const login = async () => {
     //表单验证通过才发登录请求
     await useStore.userLogin(loginForm);
     //登录成功跳转首页
-    $router.push('/')
+    let redirect: any = $route.query.redirect;
+    $router.push({path: redirect || '/'});
     //登录成功到首页展示提示信息
     ElNotification({
       type: 'success',
@@ -49,7 +51,7 @@ const rules = {
   username: [
     {required: true, min: 5, max: 9, message: '账号最少是5位', trigger: 'change'},],
   password: [
-    {required: true, min: 6, max: 9, message: '密码最少是6位', trigger: 'change'},],
+    {required: true, min: 6, max: 12, message: '密码最少是6位', trigger: 'change'},],
 }
 
 </script>
