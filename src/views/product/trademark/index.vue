@@ -18,7 +18,7 @@ let dialogFormVisible = ref<boolean>(false);
 //收集新增品牌的数据
 let trademarkParams = reactive<TradeMark>({
   tmName: '',
-  logoUrl: ''
+  logoUrl: '',
 })
 //分页请求函数
 const getHasTrademark = async (pager = 1) => {
@@ -42,18 +42,21 @@ const sizeChange = () => {
   getHasTrademark();
 }
 const addTradeMark = () => {
+
   dialogFormVisible.value = true;
-    //清空添加数据
+  //清空添加数据
+  trademarkParams.id = null;
   trademarkParams.tmName = '';
   trademarkParams.logoUrl = '';
 }
-const updateTradeMark = () => {
+const updateTradeMark = async (row: TradeMark) => {
   dialogFormVisible.value = true;
-
+  trademarkParams.tmName = row.tmName;
+  trademarkParams.id = row.id;
+  trademarkParams.logoUrl = row.logoUrl;
 }
 const cancel = () => {
   dialogFormVisible.value = false;
-
 }
 const confirm = async () => {
   let result = await reqAddOrUpdateTrademark(trademarkParams);
@@ -61,14 +64,15 @@ const confirm = async () => {
     dialogFormVisible.value = false;
     ElMessage({
       type: 'success',
-      message: '品牌添加成功'
+      message: trademarkParams.id ? '品牌添加成功' : '品牌修改成功'
     })
-
+    //再次获取已有的品牌数据
+    getHasTrademark(trademarkArr.value.length > 1 ? pageNo.value : pageNo.value - 1);
 
   } else {
     ElMessage({
-      type: 'danger',
-      message: '品牌添加失败'
+      type: 'error',
+      message: trademarkParams.id ? '品牌添加失败' : '品牌修改失败'
     })
     dialogFormVisible.value = false;
   }
@@ -123,7 +127,7 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
       </el-table-column>
       <el-table-column prop="address" label="品牌操作" align="center">
         <template #="{row,$index}">
-          <el-button type="primary" size="small" icon="Edit" @click="updateTradeMark"></el-button>
+          <el-button type="primary" size="small" icon="Edit" @click="$event=>updateTradeMark(row)"></el-button>
           <el-button type="danger" size="small" icon="Delete"></el-button>
         </template>
       </el-table-column>
@@ -139,9 +143,9 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
         :total="total"
     />
   </el-card>
-  <el-dialog v-model="dialogFormVisible">
+  <el-dialog v-model="dialogFormVisible" :title="trademarkParams.id?'修改品牌':'添加品牌'">
     <el-form>
-      <el-form-item label="品牌名称" style="width: 80%" >
+      <el-form-item label="品牌名称" style="width: 80%">
         <el-input v-model="trademarkParams.tmName"></el-input>
       </el-form-item>
       <el-form-item label="品牌图片">
