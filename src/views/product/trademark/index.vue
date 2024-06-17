@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
-import {reqHasTrademark} from "@/api/product/trademark";
+import {reqAddOrUpdateTrademark, reqHasTrademark} from "@/api/product/trademark";
 import {Records, TradeMark, TradeMarkResponseData} from "@/api/product/trademark/type.ts";
 import {ElMessage, UploadProps} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
@@ -43,6 +43,9 @@ const sizeChange = () => {
 }
 const addTradeMark = () => {
   dialogFormVisible.value = true;
+    //清空添加数据
+  trademarkParams.tmName = '';
+  trademarkParams.logoUrl = '';
 }
 const updateTradeMark = () => {
   dialogFormVisible.value = true;
@@ -50,9 +53,25 @@ const updateTradeMark = () => {
 }
 const cancel = () => {
   dialogFormVisible.value = false;
+
 }
-const confirm = () => {
-  dialogFormVisible.value = false;
+const confirm = async () => {
+  let result = await reqAddOrUpdateTrademark(trademarkParams);
+  if (result.code == 200) {
+    dialogFormVisible.value = false;
+    ElMessage({
+      type: 'success',
+      message: '品牌添加成功'
+    })
+
+
+  } else {
+    ElMessage({
+      type: 'danger',
+      message: '品牌添加失败'
+    })
+    dialogFormVisible.value = false;
+  }
 }
 //上传图片组件->上传图片之前触发的钩子函数
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -122,8 +141,8 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
   </el-card>
   <el-dialog v-model="dialogFormVisible">
     <el-form>
-      <el-form-item label="品牌名称" style="width: 80%" v-model="trademarkParams.tmName">
-        <el-input></el-input>
+      <el-form-item label="品牌名称" style="width: 80%" >
+        <el-input v-model="trademarkParams.tmName"></el-input>
       </el-form-item>
       <el-form-item label="品牌图片">
         <el-upload
